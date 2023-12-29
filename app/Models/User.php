@@ -46,4 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Phone::class);
     }
+
+    public function session()
+    {
+        return $this->hasMany(UserSession::class);
+    }
 }

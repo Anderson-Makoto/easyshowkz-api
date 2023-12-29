@@ -16,7 +16,7 @@ class CreateUserSessionsTable extends Migration
         Schema::create('user_sessions', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id')->unique();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('expire_at')->nullable(false);
+            $table->integer('expire_at')->nullable(true);
             $table->string('ip', 39);
         });
     }
