@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+Route::post('/user/login', 'UserController@login');
 
 Route::middleware(['auth:api'])->group(function () {
-    Route::post('/user/login', 'UserController@login');
     Route::post('/user/register', 'UserController@register');
 });

@@ -4,16 +4,24 @@ namespace App\Services;
 
 use App\Exceptions\ServiceException;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function login(array $data): ?array
+    public function login(array $data): ?Model
     {
-        return [];
+        $user = $this->getUserIfValidCredentials($data['email'], $data['password']);
+
+        Auth::login($user);
+        $user->refresh();
+
+        return $user;
     }
 
-    public function register(array $data): ?array
+    public function register(array $data): ?Model
     {
         $user = User::whereEmail($data['email'])->first();
 
@@ -21,8 +29,27 @@ class UserService
             throw new ServiceException('User already exists', Response::HTTP_BAD_REQUEST);
         }
 
-        $user = User::create($data);
+        $user = User::make($data);
+        $user->password = Hash::make($data['password']);
 
-        return $user->getAttributes();
+        $user->save();
+
+        return $user;
+    }
+
+    private function getUserIfValidCredentials(string $email, string $password): User
+    {
+        $credentials = [
+            'email' => $email,
+            'password' => $password
+        ];
+
+        if (!Auth::attempt($credentials)) {
+            throw new ServiceException('Email or password invalid');
+        }
+
+        $user = User::whereEmail($email)->first();
+
+        return $user;
     }
 }
