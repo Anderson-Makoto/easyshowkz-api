@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/user/login', 'UserController@login');
 
-Route::middleware(['auth:api'])->group(function () {
-    Route::post('/user/register', 'UserController@register');
+Route::middleware(['auth'])->group(function () {
+    Route::post('/user/register', [UserController::class, 'register'])->withoutMiddleware(['auth']);
+    Route::post('/user/login', [UserController::class, 'login'])->withoutMiddleware(['auth']);
 });
