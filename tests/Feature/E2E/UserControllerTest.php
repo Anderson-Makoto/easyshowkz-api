@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Illuminate\Support\Str;
 
 class UserControllerTest extends TestCase
 {
@@ -64,7 +65,7 @@ class UserControllerTest extends TestCase
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'email' => $this->faker->email,
-            'password' => $this->faker->text(8),
+            'password' => Str::random(8),
             'phone' => $this->faker->phoneNumber,
             'country_code' => $this->faker->randomElement(['1', '55', '591'])
         ];
