@@ -7,8 +7,7 @@ use App\Http\Requests\UserRegisterRequest;
 use App\Services\UserService;
 use Exception;
 use Illuminate\Http\JsonResponse;
-
-use function App\Helpers\responseErrorHandler;
+use App\Helpers\ResponseErrorHandlerHelper;
 
 class UserController extends Controller
 {
@@ -25,7 +24,7 @@ class UserController extends Controller
             $requestData = $request->all();
             $this->userService->login($requestData);
         } catch (Exception $e) {
-            return responseErrorHandler($e);
+            return ResponseErrorHandlerHelper::handle($e);
         }
     }
 
@@ -36,7 +35,7 @@ class UserController extends Controller
             $userData = $this->userService->register($requestData);
             return response()->json($userData);
         } catch (Exception $e) {
-            return responseErrorHandler($e);
+            return ResponseErrorHandlerHelper::handle($e);
         }
     }
 }
