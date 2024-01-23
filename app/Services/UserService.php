@@ -23,12 +23,6 @@ class UserService
 
     public function register(array $data): ?Model
     {
-        $user = User::whereEmail($data['email'])->first();
-
-        if ($user) {
-            throw new ServiceException('User already exists', Response::HTTP_BAD_REQUEST);
-        }
-
         $user = User::make($data);
         $user->password = Hash::make($data['password']);
 
