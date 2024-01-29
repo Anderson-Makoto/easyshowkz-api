@@ -9,6 +9,9 @@ use Tests\TestCase;
 use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use App\Helpers\PhoneNumberHelper;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserControllerTest extends TestCase
 {
@@ -35,7 +38,8 @@ class UserControllerTest extends TestCase
             'id' => $responseData['id'],
             'first_name' => $userData['first_name'],
             'last_name' => $userData['last_name'],
-            'email' => $userData['email']
+            'email' => $userData['email'],
+            'phone' => $userData['phone'],
         ]);
     }
 
@@ -97,7 +101,27 @@ class UserControllerTest extends TestCase
 
     public function testLoginUserIfValidCredentials()
     {
-        
+        $password = '123123123';
+        $user = User::factory()->create(['password' => Hash::make($password)]);
+
+        Auth::login($user);
+        $user->refresh();
+        Auth::guard('api')->check();
+
+        $this->assertDatabaseHas($this::USER_TABLE, [
+            'id' => $user->id,
+            'remember_token' => null,
+        ]);
+
+        $response = $this->postJson('api/user/login', [
+            'email' => $user->email,
+            'password' => $password
+        ])->assertOk();
+
+        $this->assertDatabaseHas($this::USER_TABLE, [
+            'id' => $user->id,
+            'remember_token' => null
+        ]);
     }
 
     private function makeUserRegisterData(?array $data = null): array

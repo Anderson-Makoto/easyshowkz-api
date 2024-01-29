@@ -13,12 +13,17 @@ class UserService
 {
     public function login(array $data): ?Model
     {
-        $user = $this->getUserIfValidCredentials($data['email'], $data['password']);
+        try {
 
-        Auth::login($user);
-        $user->refresh();
+            $user = $this->getUserIfValidCredentials($data['email'], $data['password']);
 
-        return $user;
+            Auth::login($user);
+            $user->refresh();
+
+            return $user;
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 
     public function register(array $data): ?Model
